@@ -210,49 +210,94 @@ require("../styles/main.css");
 var _utils = require("./utils");
 
 var $input = document.querySelector('#js-insert');
-var $taskTable = document.querySelector("#js-list");
+var $taskTable = document.querySelector('#js-list');
+var $filterTask = document.querySelector('.js-filters');
+var $btnTasksClear = document.querySelector('#js-clear-completed');
 var tasks = [{
   text: 'Homework',
-  completed: true,
   id: (0, _utils.ID)()
 }, {
   text: 'Workout',
-  completed: true,
   id: (0, _utils.ID)()
 }, {
   text: 'Buy products',
-  completed: true,
   id: (0, _utils.ID)()
 }];
 
 var renderTasksList = function renderTasksList(list) {
   $taskTable.innerHTML = '';
-  list.forEach(function (task, index) {
-    // console.log(index, index % 2 === 0 ? 'чет' : className);
-    var className = '';
-
-    if (index % 2 !== 0) {
-      className = 'class = "completed"';
-    }
-
-    var listElement = "<li ".concat(className, ">\n        <div class=\"todo\">\n        <input type=\"checkbox\" class=\"toggle\">\n        <span>").concat(task.text, "</span>\n        <button class=\"destroy\"></button>\n        </div>\n        <input type=\"text\" class=\"edit\"></li>");
+  list.forEach(function (task) {
+    var listElement = "<li>\n        <input type=\"checkbox\" class=\"toggle\">\n        <div class=\"todo\">\n        <span>".concat(task.text, "</span>\n        </div>\n        <button class=\"destroy\"></button>\n        <input type=\"text\" class=\"edit\"></li>");
     $taskTable.insertAdjacentHTML("beforeend", listElement);
   });
 };
 
 $input.addEventListener('keyup', function (event) {
   if (event.which === 13) {
-    tasks.push($input.value);
-    $input.value = {
-      text: '',
-      completed: true,
+    tasks.push({
+      text: "".concat($input.value),
       id: (0, _utils.ID)()
-    };
-    console.log(tasks);
+    });
+    $input.value = '';
     renderTasksList(tasks);
   }
 });
+console.log(tasks);
 renderTasksList(tasks);
+$taskTable.addEventListener('click', deleteComplete);
+
+function deleteComplete(event) {
+  var deleteBtn = event.target;
+
+  if (deleteBtn.classList[0] === 'destroy') {
+    var todoTask = deleteBtn.parentElement;
+    todoTask.remove();
+  }
+
+  var completeBtn = event.target;
+
+  if (completeBtn.classList[0] === 'toggle') {
+    var _todoTask = completeBtn.parentElement;
+
+    _todoTask.classList.toggle('completed');
+  }
+}
+
+$filterTask.addEventListener('click', filterTodo);
+
+function filterTodo(event) {
+  var tasksList = $taskTable.childNodes;
+  tasksList.forEach(function (taskList) {
+    switch (event.target.value) {
+      case 'all':
+        taskList.style.display = 'flex';
+        break;
+
+      case 'completed':
+        if (taskList.classList.contains('completed')) {
+          taskList.style.display = 'flex';
+        } else {
+          taskList.style.display = 'none';
+        }
+
+        break;
+
+      case 'active':
+        if (!taskList.classList.contains('completed')) {
+          taskList.style.display = 'flex';
+        } else {
+          taskList.style.display = 'none';
+        }
+
+        break;
+    }
+  });
+  $btnTasksClear.addEventListener('click', function () {
+    if (tasksList.classList === 'completed') {
+      tasksList.remove();
+    }
+  });
+}
 },{"../styles/main.css":"styles/main.css","./utils":"js/utils.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -281,7 +326,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56066" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60824" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

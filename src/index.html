@@ -18,11 +18,11 @@
             <span class="total" id="js-total">3 items left</span>
         </div>
         <div class="col-1-2">
-            <ul class="filter" id="js-filters">
-                <li><a href="#/all" class="button selected">All</a></li>
-                <li><a href="#/active" class="button">Active</a></li>
-                <li><a href="#/completed" class="button">Completed</a></li>
-            </ul>
+            <select name="filter" class="js-filters">
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+            </select>
         </div>
         <div class="col-1-4">
             <button class="button button--clear" id="js-clear-completed">Clear Completed</button>
@@ -33,9 +33,6 @@
     </div>
     <div class="row">
         <ul class="list">
-            <li id="1614959130076"><div class="todo"><input type="checkbox" class="toggle"><span>1</span><button class="destroy"></button></div><input type="text" class="edit"></li>
-            <li id="1614959130902"><div class="todo"><input type="checkbox" class="toggle"><span>2</span><button class="destroy"></button></div><input type="text" class="edit"></li>
-            <li id="1614959131349" class="completed"><div class="todo"><input type="checkbox" class="toggle"><span>3</span><button class="destroy"></button></div><input type="text" class="edit"></li>
             <li id="1614959131961" class="editing"><div class="todo"><input type="checkbox" class="toggle"><span>4</span><button class="destroy"></button></div><input type="text" class="edit"></li>
         </ul>
     </div>
