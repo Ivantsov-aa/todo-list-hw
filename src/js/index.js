@@ -4,18 +4,38 @@ import { ID } from './utils';
 
 let $input = document.querySelector('#js-insert');
 let $taskTable = document.querySelector('#js-list');
+<<<<<<< HEAD
 let $counter = document.querySelector('#js-total');
 
 let tasks = [ 
     {text: "Buy", completed: false, id: ID()}, 
     {text: "some", completed: false, id: ID()},
     {text: "drinks", completed: false, id: ID()},
+=======
+let $filterTask = document.querySelector('.js-filters');
+let $btnTasksClear = document.querySelector('#js-clear-completed');
+
+let tasks = [
+    {
+        text: 'Homework',
+        id: ID(),
+    },
+    {
+        text: 'Workout',
+        id: ID(),
+    },
+    {
+        text: 'Buy products',
+        id: ID(),
+    }
+>>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
 ];
 
 const renderTasksList = (list) => {
     $counter.innerHTML =  `${list.length} items left ` ;
     $taskTable.innerHTML = '';
     list.forEach((task) => {
+<<<<<<< HEAD
         const checked = task.completed ? 'checked' : '';
 
         const liTask = document.createElement('li');
@@ -55,19 +75,58 @@ const renderTasksList = (list) => {
         liTask.append(editTask);
         $taskTable.append(liTask);
         
+=======
+        let listElement = `<li>
+        <input type="checkbox" class="toggle">
+        <div class="todo">
+        <span>${task.text}</span>
+        </div>
+        <button class="destroy"></button>
+        <input type="text" class="edit"></li>`;
+        $taskTable.insertAdjacentHTML("beforeend", listElement)
+>>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
     });
 }
 
 $input.addEventListener('keyup', (event) => {
+<<<<<<< HEAD
    if (event.key === 'Enter') {
     tasks.push( {text: $input.value, completed: false, id: ID()} );
     $input.value = ""; 
+=======
+   if (event.which === 13) {
+    tasks.push(
+        {
+        text: `${$input.value}`,
+        id: ID(),
+    });
+    $input.value = '';
+>>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
     renderTasksList(tasks); 
 
    }
   
 });
+console.log(tasks);
+renderTasksList(tasks);
 
+$taskTable.addEventListener('click', deleteComplete);
+
+function deleteComplete(event) {
+    const deleteBtn = event.target;
+    if(deleteBtn.classList[0] === 'destroy') {
+        const todoTask = deleteBtn.parentElement;
+        todoTask.remove();
+    }
+
+    const completeBtn = event.target;
+    if(completeBtn.classList[0] === 'toggle') {
+        const todoTask = completeBtn.parentElement;
+        todoTask.classList.toggle('completed');
+    }
+}
+
+<<<<<<< HEAD
 renderTasksList(tasks);
 
 function deleteComplete(event) {
@@ -136,3 +195,37 @@ deleteAllTasks.addEventListener('click', () => {
         deleteTask.remove();
     })
 })
+=======
+$filterTask.addEventListener('click', filterTodo);
+
+function filterTodo (event) {
+    const tasksList = $taskTable.childNodes;
+    tasksList.forEach(taskList => {
+        switch(event.target.value) {
+            case 'all':
+                taskList.style.display = 'flex';
+                break;
+            case 'completed':
+                if(taskList.classList.contains('completed')) {
+                    taskList.style.display = 'flex';
+                } else {
+                    taskList.style.display = 'none';
+                }
+                break;
+            case 'active':
+                if(!taskList.classList.contains('completed')) {
+                    taskList.style.display = 'flex';
+                } else {
+                    taskList.style.display = 'none';
+                }
+                break;  
+        }
+    });
+    
+    $btnTasksClear.addEventListener('click',() => {
+        if(tasksList.classList === 'completed') {
+            tasksList.remove();
+        }
+    })
+}
+>>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
