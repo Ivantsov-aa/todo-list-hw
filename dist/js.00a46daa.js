@@ -210,49 +210,140 @@ require("../styles/main.css");
 var _utils = require("./utils");
 
 var $input = document.querySelector('#js-insert');
-var $taskTable = document.querySelector("#js-list");
+var $taskTable = document.querySelector('#js-list');
+var $counter = document.querySelector('#js-total');
 var tasks = [{
-  text: 'Homework',
-  completed: true,
+  text: "Buy",
+  completed: false,
   id: (0, _utils.ID)()
 }, {
-  text: 'Workout',
-  completed: true,
+  text: "some",
+  completed: false,
   id: (0, _utils.ID)()
 }, {
-  text: 'Buy products',
-  completed: true,
+  text: "drinks",
+  completed: false,
   id: (0, _utils.ID)()
 }];
 
 var renderTasksList = function renderTasksList(list) {
+  $counter.innerHTML = "".concat(list.length, " items left ");
   $taskTable.innerHTML = '';
-  list.forEach(function (task, index) {
-    // console.log(index, index % 2 === 0 ? 'чет' : className);
-    var className = '';
+  list.forEach(function (task) {
+    var checked = task.completed ? 'checked' : '';
+    var liTask = document.createElement('li');
+    liTask.id = task.id;
 
-    if (index % 2 !== 0) {
-      className = 'class = "completed"';
+    if (task.completed) {
+      liTask.classList.add('completed');
     }
 
-    var listElement = "<li ".concat(className, ">\n        <div class=\"todo\">\n        <input type=\"checkbox\" class=\"toggle\">\n        <span>").concat(task.text, "</span>\n        <button class=\"destroy\"></button>\n        </div>\n        <input type=\"text\" class=\"edit\"></li>");
-    $taskTable.insertAdjacentHTML("beforeend", listElement);
+    liTask.innerHTML = "\n        <input ".concat(checked, " data-id=\"").concat(task.id, "\" type=\"checkbox\" class=\"toggle\">\n        <div class=\"todo\">\n\n        <span>").concat(task.text, "</span>\n        \n        </div>\n        <button data-value=\"").concat(task.id, "\" class=\"destroy\"></button>");
+    liTask.addEventListener('dblclick', function () {
+      liTask.classList.add('editing');
+    });
+    var editTask = document.createElement('input');
+    editTask.type = "text";
+    editTask.className = "edit";
+    editTask.value = task.text;
+    editTask.addEventListener('keyup', function (event) {
+      if (event.key === 'Escape') {
+        liTask.classList.remove('editing');
+      }
+
+      if (event.key === "Enter") {
+        liTask.classList.remove('editing');
+        task.text = editTask.value;
+        renderTasksList(list);
+      }
+    });
+    liTask.append(editTask);
+    $taskTable.append(liTask);
   });
 };
 
 $input.addEventListener('keyup', function (event) {
-  if (event.which === 13) {
-    tasks.push($input.value);
-    $input.value = {
-      text: '',
-      completed: true,
+  if (event.key === 'Enter') {
+    tasks.push({
+      text: $input.value,
+      completed: false,
       id: (0, _utils.ID)()
-    };
-    console.log(tasks);
+    });
+    $input.value = "";
     renderTasksList(tasks);
   }
 });
 renderTasksList(tasks);
+
+function deleteComplete(event) {
+  var deleteBtn = event.target;
+
+  if (deleteBtn.classList.contains('destroy')) {
+    var deleteId = deleteBtn.dataset.value;
+    tasks = tasks.filter(function (task) {
+      return task.id !== deleteId;
+    });
+    renderTasksList(tasks);
+  }
+
+  var completeBtn = event.target;
+
+  if (completeBtn.classList.contains('toggle')) {
+    var changeId = completeBtn.dataset.id;
+    var task = tasks.find(function (el) {
+      return el.id === changeId;
+    });
+    task.completed = !task.completed;
+    renderTasksList(tasks);
+  }
+}
+
+$taskTable.addEventListener('click', deleteComplete);
+var $tasksFilter = document.querySelector('#js-filters');
+var $tasksBtnFilter = document.querySelectorAll('#js-filters > li');
+$tasksFilter.addEventListener('click', function (event) {
+  var targetFilter = event.target;
+  var tasksForFilter = document.querySelectorAll('#js-list > li');
+  $tasksBtnFilter.forEach(function (filter) {
+    if (filter.dataset.value === targetFilter.dataset.value) {
+      filter.classList.add('selected');
+    } else {
+      filter.classList.remove('selected');
+    }
+  });
+  tasksForFilter.forEach(function (filter) {
+    switch (targetFilter.dataset.value) {
+      case 'all':
+        filter.style.display = 'flex';
+        break;
+
+      case 'completed':
+        if (filter.classList.contains('completed')) {
+          filter.style.display = 'flex';
+        } else {
+          filter.style.display = 'none';
+        }
+
+        break;
+
+      case 'active':
+        if (!filter.classList.contains('completed')) {
+          filter.style.display = 'flex';
+        } else {
+          filter.style.display = 'none';
+        }
+
+        break;
+    }
+  });
+});
+var deleteAllTasks = document.querySelector('#js-clear-completed');
+deleteAllTasks.addEventListener('click', function () {
+  var deleteTasks = document.querySelectorAll('#js-list > li');
+  deleteTasks.forEach(function (deleteTask) {
+    deleteTask.remove();
+  });
+});
 },{"../styles/main.css":"styles/main.css","./utils":"js/utils.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -281,7 +372,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56066" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60465" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
