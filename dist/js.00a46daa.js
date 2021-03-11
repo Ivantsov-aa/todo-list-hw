@@ -211,7 +211,6 @@ var _utils = require("./utils");
 
 var $input = document.querySelector('#js-insert');
 var $taskTable = document.querySelector('#js-list');
-<<<<<<< HEAD
 var $counter = document.querySelector('#js-total');
 var tasks = [{
   text: "Buy",
@@ -224,18 +223,6 @@ var tasks = [{
 }, {
   text: "drinks",
   completed: false,
-=======
-var $filterTask = document.querySelector('.js-filters');
-var $btnTasksClear = document.querySelector('#js-clear-completed');
-var tasks = [{
-  text: 'Homework',
-  id: (0, _utils.ID)()
-}, {
-  text: 'Workout',
-  id: (0, _utils.ID)()
-}, {
-  text: 'Buy products',
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
   id: (0, _utils.ID)()
 }];
 
@@ -243,7 +230,6 @@ var renderTasksList = function renderTasksList(list) {
   $counter.innerHTML = "".concat(list.length, " items left ");
   $taskTable.innerHTML = '';
   list.forEach(function (task) {
-<<<<<<< HEAD
     var checked = task.completed ? 'checked' : '';
     var liTask = document.createElement('li');
     liTask.id = task.id;
@@ -273,15 +259,10 @@ var renderTasksList = function renderTasksList(list) {
     });
     liTask.append(editTask);
     $taskTable.append(liTask);
-=======
-    var listElement = "<li>\n        <input type=\"checkbox\" class=\"toggle\">\n        <div class=\"todo\">\n        <span>".concat(task.text, "</span>\n        </div>\n        <button class=\"destroy\"></button>\n        <input type=\"text\" class=\"edit\"></li>");
-    $taskTable.insertAdjacentHTML("beforeend", listElement);
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
   });
 };
 
 $input.addEventListener('keyup', function (event) {
-<<<<<<< HEAD
   if (event.key === 'Enter') {
     tasks.push({
       text: $input.value,
@@ -289,44 +270,24 @@ $input.addEventListener('keyup', function (event) {
       id: (0, _utils.ID)()
     });
     $input.value = "";
-=======
-  if (event.which === 13) {
-    tasks.push({
-      text: "".concat($input.value),
-      id: (0, _utils.ID)()
-    });
-    $input.value = '';
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
     renderTasksList(tasks);
   }
 });
-console.log(tasks);
 renderTasksList(tasks);
-<<<<<<< HEAD
-=======
-$taskTable.addEventListener('click', deleteComplete);
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
 
 function deleteComplete(event) {
   var deleteBtn = event.target;
 
-<<<<<<< HEAD
   if (deleteBtn.classList.contains('destroy')) {
     var deleteId = deleteBtn.dataset.value;
     tasks = tasks.filter(function (task) {
       return task.id !== deleteId;
     });
     renderTasksList(tasks);
-=======
-  if (deleteBtn.classList[0] === 'destroy') {
-    var todoTask = deleteBtn.parentElement;
-    todoTask.remove();
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
   }
 
   var completeBtn = event.target;
 
-<<<<<<< HEAD
   if (completeBtn.classList.contains('toggle')) {
     var changeId = completeBtn.dataset.id;
     var task = tasks.find(function (el) {
@@ -361,52 +322,20 @@ $tasksFilter.addEventListener('click', function (event) {
           filter.style.display = 'flex';
         } else {
           filter.style.display = 'none';
-=======
-  if (completeBtn.classList[0] === 'toggle') {
-    var _todoTask = completeBtn.parentElement;
-
-    _todoTask.classList.toggle('completed');
-  }
-}
-
-$filterTask.addEventListener('click', filterTodo);
-
-function filterTodo(event) {
-  var tasksList = $taskTable.childNodes;
-  tasksList.forEach(function (taskList) {
-    switch (event.target.value) {
-      case 'all':
-        taskList.style.display = 'flex';
-        break;
-
-      case 'completed':
-        if (taskList.classList.contains('completed')) {
-          taskList.style.display = 'flex';
-        } else {
-          taskList.style.display = 'none';
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
         }
 
         break;
 
       case 'active':
-<<<<<<< HEAD
         if (!filter.classList.contains('completed')) {
           filter.style.display = 'flex';
         } else {
           filter.style.display = 'none';
-=======
-        if (!taskList.classList.contains('completed')) {
-          taskList.style.display = 'flex';
-        } else {
-          taskList.style.display = 'none';
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
         }
 
         break;
     }
   });
-<<<<<<< HEAD
 });
 var deleteAllTasks = document.querySelector('#js-clear-completed');
 deleteAllTasks.addEventListener('click', function () {
@@ -415,14 +344,6 @@ deleteAllTasks.addEventListener('click', function () {
     deleteTask.remove();
   });
 });
-=======
-  $btnTasksClear.addEventListener('click', function () {
-    if (tasksList.classList === 'completed') {
-      tasksList.remove();
-    }
-  });
-}
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
 },{"../styles/main.css":"styles/main.css","./utils":"js/utils.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -451,11 +372,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-<<<<<<< HEAD
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60465" + '/');
-=======
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60824" + '/');
->>>>>>> e4bc89d1421c1427843d7f01026638d002d1e29e
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60735" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
