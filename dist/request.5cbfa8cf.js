@@ -117,262 +117,18 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
-
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
-
-  return bundleURL;
-}
-
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
-
-    if (matches) {
-      return getBaseURL(matches[0]);
-    }
-  }
-
-  return '/';
-}
-
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
-
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
-
-function updateLink(link) {
-  var newLink = link.cloneNode();
-
-  newLink.onload = function () {
-    link.remove();
-  };
-
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
-    }
-
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"styles/main.css":[function(require,module,exports) {
-var reloadCSS = require('_css_loader');
-
-module.hot.dispose(reloadCSS);
-module.hot.accept(reloadCSS);
-},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"js/utils.js":[function(require,module,exports) {
+})({"js/request.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ID = void 0;
-
-var ID = function ID() {
-  return Math.random().toString(36).substr(2, 9);
-};
-
-exports.ID = ID;
-},{}],"js/index.js":[function(require,module,exports) {
-"use strict";
-
-require("../styles/main.css");
-
-var _utils = require("./utils");
-
-var $input = document.querySelector('#js-insert');
-var $taskTable = document.querySelector('#js-list');
-var $counter = document.querySelector('#js-total');
-var $tasksFilter = document.querySelector('#js-filters');
-var $tasksBtnFilter = document.querySelectorAll('#js-filters > li');
-var clearButton = document.querySelector('#js-clear-completed');
-var inputLocalKey = 'text';
-var selectedFilterKey = 'selectedFilter';
-$input.value = localStorage.getItem(inputLocalKey);
-var keyLSTasks = 'tasks';
-var tasks = localStorage.getItem(keyLSTasks);
-
-if (tasks === null) {
-  tasks = [];
-} else {
-  tasks = JSON.parse(tasks);
-}
-
-var renderTasksList = function renderTasksList(list) {
-  hideCompletedBtn(tasks);
-  $counter.innerHTML = "".concat(list.length, " items left ");
-  $taskTable.innerHTML = '';
-  list.forEach(function (task) {
-    var checked = task.completed ? 'checked' : '';
-    var liTask = document.createElement('li');
-    liTask.id = task.id;
-
-    if (task.completed) {
-      liTask.classList.add('completed');
-    }
-
-    liTask.innerHTML = "\n        <input ".concat(checked, " data-id=\"").concat(task.id, "\" type=\"checkbox\" class=\"toggle\">\n        <div class=\"todo\">\n        \n        <span>").concat(task.text, "</span>\n        \n        </div>\n        <button data-value=\"").concat(task.id, "\" class=\"destroy\"></button>");
-    liTask.addEventListener('dblclick', function () {
-      liTask.classList.add('editing');
-    });
-    var editTask = document.createElement('input');
-    editTask.type = 'text';
-    editTask.className = 'edit';
-    editTask.value = task.text;
-    editTask.addEventListener('keyup', function (event) {
-      if (event.key === 'Escape') {
-        liTask.classList.remove('editing');
-      }
-
-      if (event.key === 'Enter') {
-        liTask.classList.remove('editing');
-        task.text = editTask.value;
-        renderTasksList(list);
-        updateTaskApi(liTask.id);
-      }
-    });
-    liTask.append(editTask);
-    $taskTable.append(liTask);
-  });
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-};
-
-var hideCompletedBtn = function hideCompletedBtn(tasks) {
-  var completedTask = tasks.find(function (task) {
-    return task.completed;
-  });
-
-  if (completedTask) {
-    clearButton.style.display = 'inline-block';
-  } else {
-    clearButton.style.display = 'none';
-  }
-};
-
-$input.addEventListener('keyup', function (event) {
-  var valueToStore = $input.value;
-
-  if (event.key === 'Enter') {
-    tasks.push({
-      text: valueToStore,
-      completed: false,
-      id: (0, _utils.ID)()
-    });
-    $input.value = '';
-    valueToStore = '';
-    renderTasksList(tasks);
-    createTaskApi();
-  }
-
-  localStorage.setItem(inputLocalKey, valueToStore);
-});
-renderTasksList(tasks);
-
-function deleteComplete(event) {
-  var deleteBtn = event.target;
-
-  if (deleteBtn.classList.contains('destroy')) {
-    var deleteId = deleteBtn.dataset.value;
-    tasks = tasks.filter(function (task) {
-      return task.id !== deleteId;
-    });
-    renderTasksList(tasks);
-    deleteTaskApi(deleteId);
-  }
-
-  var completeBtn = event.target;
-
-  if (completeBtn.classList.contains('toggle')) {
-    var changeId = completeBtn.dataset.id;
-    var task = tasks.find(function (task) {
-      return task.id === changeId;
-    });
-    task.completed = !task.completed;
-    renderTasksList(tasks);
-    updateTaskApi(changeId);
-  }
-}
-
-$taskTable.addEventListener('click', deleteComplete);
-$tasksFilter.addEventListener('click', function (event) {
-  var targetFilter = event.target;
-  var filterType = targetFilter.dataset.value;
-
-  if (filterType) {
-    $tasksBtnFilter.forEach(function (filter) {
-      if (filter.dataset.value === filterType) {
-        filter.classList.add('selected');
-      } else {
-        filter.classList.remove('selected');
-      }
-    });
-    localStorage.setItem(selectedFilterKey, filterType);
-    var filteredTasks = tasks;
-
-    if (filterType === 'active') {
-      filteredTasks = filteredTasks.filter(function (task) {
-        return !task.completed;
-      });
-    } else if (filterType === 'completed') {
-      filteredTasks = filteredTasks.filter(function (task) {
-        return task.completed;
-      });
-    }
-
-    ;
-    renderTasksList(filteredTasks);
-  }
-});
-var selectedLocalFilter = localStorage.getItem(selectedFilterKey);
-$tasksBtnFilter.forEach(function (filter) {
-  if (selectedLocalFilter === filter.dataset.value) {
-    filter.classList.add('selected');
-  } else {
-    filter.classList.remove('selected');
-  }
-});
-clearButton.addEventListener("click", function () {
-  tasks = tasks.filter(function (task) {
-    return !task.completed;
-  });
-  renderTasksList(tasks);
-});
-
-window.onstorage = function (ev) {
-  tasks = JSON.parse(ev.newValue);
-  console.log(tasks);
-  renderTasksList(tasks);
-}; //////////////////////////////
-
+exports.getTaskApi = getTaskApi;
+exports.createTaskApi = createTaskApi;
+exports.deleteTaskApi = deleteTaskApi;
+exports.updateTaskApi = updateTaskApi;
+exports.dateChange = dateChange;
+exports.compareDate = compareDate;
 
 function getTaskApi() {
   var getTask = axios.get('http://localhost:3000/todos');
@@ -382,8 +138,6 @@ function getTaskApi() {
     }
   });
 }
-
-getTaskApi();
 
 function createTaskApi() {
   tasks.forEach(function (task) {
@@ -410,10 +164,6 @@ function updateTaskApi(id) {
   });
 }
 
-window.localStorage.lastDateModified = new Date().getTime();
-var date = new Date(parseInt(window.localStorage.time));
-var dateChangeLS = localStorage.getItem('lastDateModified');
-
 function dateChange() {
   var dateApi = axios.put('http://localhost:3000/info', {
     lastDateModified: dateChangeLS
@@ -432,7 +182,7 @@ function compareDate() {
     }
   });
 }
-},{"../styles/main.css":"styles/main.css","./utils":"js/utils.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -635,5 +385,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/index.js"], null)
-//# sourceMappingURL=/js.00a46daa.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","js/request.js"], null)
+//# sourceMappingURL=/request.5cbfa8cf.js.map
